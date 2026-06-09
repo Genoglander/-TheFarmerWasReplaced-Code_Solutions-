@@ -1,5 +1,6 @@
 # 【TheFarmerWasReplaced 编程农场代码库】
-用来记录自己在编程农场里的学习和思考更新的库。这些代码都不是客观意义上的最优解，而是目前能够让我推动游戏进程范围内的最优解，随时都会更新。希望以后能够无限接近最优解。
+用来记录自己在编程农场里的学习和思考更新的库。随时更新。
+以下为单无人机全作物解法。
 A repository used to update my codes and mind chain during playing TheFarmerWasReplaced.
 
 # -HarvestAll-
@@ -107,7 +108,7 @@ def GoEdge():
 def is_even(n):
 	return (n+2) % 2 == 0
 	
-def is_danshu(n):
+def is_odd(n):
 	return (n+2) % 2 != 0
 
 def heavestTree():
@@ -128,7 +129,7 @@ while True:
 				heavestTree()
 				plant(Entities.Tree)
 				move(North)
-			elif (is_danshu(get_pos_x()) and is_danshu(get_pos_y())):
+			elif (is_odd(get_pos_x()) and is_odd(get_pos_y())):
 					heavestTree()
 					plant(Entities.Tree)
 					move(North)
@@ -213,6 +214,43 @@ def Go00():
 		move(East)
 	while get_pos_y() != 0:
 		move(South)
+
+def plant9x9():
+	for i in range(5):
+		for i in range(9):
+			till()
+			plant(Entities.Cactus)
+			move(North)
+		till()
+		plant(Entities.Cactus)
+		move(East)
+		for i in range(9):
+			till()
+			plant(Entities.Cactus)
+			move(South)
+		till()
+		plant(Entities.Cactus)
+		move(East)
+
+def plant31x31Cactus():
+	clear()
+	Go00()
+	for i in range(3):
+		plant9x9()
+		move(East)
+	while get_pos_y() != 11:
+		move(North)
+	move(West)
+	for i in range(3):
+		plant9x9()
+		move(East)
+	while get_pos_y() != 22:
+		move(North)
+	move(West)
+	for i in range(3):
+		plant9x9()
+		move(East)
+		
 		
 def Back_x():
 	while get_pos_x() != 0:
@@ -223,38 +261,80 @@ def Back_y():
 		move(South)
 		
 def sort_current_row():
-	n = get_world_size()
+	n = 10
 	for i in range(n):
 		for j in range(n-1):
-			if measure() > measure(East):
-				swap(East)
-			move(East)
-		Back_x()
+			if measure() != None and measure(East) != None:
+				if measure() > measure(East):
+					swap(East)
+				move(East)
+				
+		for j in range(n-1):
+			move(West)
+		n -= 1
+
+def sort_current_collon():
+	n = 10
+	for i in range(n):
+		for j in range(n-1):
+			if measure() != None and measure(North) != None:
+				if measure() > measure(North):
+					swap(North)
+				move(North)
+		for j in range(n-1):
+			move(South)
 		n -= 1
 		
-def sort_current_collon():
-	n = get_world_size()
-	for i in range(n):
-		if measure() > measure(North):
-			swap(North)
+def arrange9x9():
+	for i in range(10):
+		sort_current_row()
 		move(North)
-	Back_y()
-	n -= 1
-		
+	for i in range(10):
+		move(South)
+	for i in range(10):
+		sort_current_collon()
+		move(East)
+
+
+#种植
+plant31x31Cactus()
 Go00()
 
-for i in range(get_world_size()):
-	sort_current_row()
+#排序
+arrange9x9()
+move(East)
+arrange9x9()
+move(East)
+arrange9x9()
+while get_pos_y() != 11:
 	move(North)
-	
-Go00()
+arrange9x9()
+move(East)
+arrange9x9()
+move(East)
+arrange9x9()
+while get_pos_y() != 22:
+	move(North)
+arrange9x9()
+move(East)
+arrange9x9()
+move(East)
+arrange9x9()
 
-
-for i in range(get_world_size()):
-	sort_current_collon()
-	move(East)
+#收获
+for i in range(3):
+	harvest()
 	
-harvest()
+	for i in range(2):
+		for i in range(11):
+			move(South)
+		harvest()
+			
+	for i in range(11):
+		move(East)
+	while get_pos_y() != 22:
+		move(North)
+
 ```
 
 # -Optimal Solution for Dinosaur's Bone in Single Drone-
